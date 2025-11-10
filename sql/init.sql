@@ -1,1 +1,1 @@
-CREATE TABLE `userdb`.`cooling_panels` (`id` INT NOT NULL AUTO_INCREMENT , `panel_id` INT NOT NULL , `time` DATETIME NOT NULL , `temp` DECIMAL(10,8) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `userdb`.`cooling_panels` (`id` INT NOT NULL AUTO_INCREMENT , `panel_id` INT NOT NULL , `timestamp` DATETIME NOT NULL , `temperature_c` DOUBLE NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
