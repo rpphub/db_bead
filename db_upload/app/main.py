@@ -6,6 +6,7 @@ from data.data import Data
 def main():
     print("App Started.")
 
+    #Panelek
     # Táblázat beolvasás és manipuláció
     df = Data.get_df_from_csv("data/raw_panel.csv")
 
@@ -36,8 +37,12 @@ def main():
         .astype(float)              # majd float-tá konvertálás
     )
 
-    print(df_long.iloc[471549]["temperature_c"])
-    
+    #Adagok
+    # Táblázat beolvasás és manipuláció
+    portions_df = Data.get_df_from_csv("data/Adagok.csv")
+    portions_df = portions_df.dropna(how='all')  # Eldobja az összes olyan sort, ahol minden cella NaN (azaz üres)
+    portions_df.columns = ["dose_id", "start_date", "start_time", "end_date", "end_time", "interval_sec", "duration_min"]
+
 
     #db = Database("mysqldb",3306,"dm","dmpass")
     db = Database("127.0.0.1",3306,"db_bead","db_pass")
@@ -47,12 +52,20 @@ def main():
           time.sleep(5)
     print("Connection OK.")
 
-    if(db.hasData()):
-        print("DB Data rdy.")
+    if(db.tableHasData("doses")):
+        print("doses Data rdy.")
     else:    
-        print("Upload to DB.")
-        db.df_to_db(df_long)
-        print("Upload Finished.")
+        print("portions_df Upload to DB.")
+        db.portions_df_to_db(portions_df)
+        print("portions_df Upload Finished.")
+
+    
+    if(db.tableHasData("cooling_panels")):
+        print("cooling_panels Data rdy.")
+    else:    
+        print("cooling_panels Upload to DB.")
+        db.coolingpanel_df_to_db(df_long)
+        print("cooling_panels Upload Finished.")
 
 
 if __name__ == "__main__":

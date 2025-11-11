@@ -22,7 +22,7 @@ class Database():
         except Exception as e:
             print(f"Error: {e}")
             return 0
-    def hasData(self) -> bool:
+    def tableHasData(self,table) -> bool:
         try:
             db = mysql.connector.connect(
                 host=self.host,
@@ -32,7 +32,7 @@ class Database():
             )
 
             cursor = db.cursor()
-            cursor.execute("SELECT COUNT(*) FROM userdb.cooling_panels")
+            cursor.execute(f"SELECT COUNT(*) FROM userdb.{table}")
             count = cursor.fetchone()[0]
 
             cursor.close()
@@ -47,7 +47,7 @@ class Database():
             print(f"Error: {e}")
             return 0
     
-    def df_to_db(self, df):
+    def coolingpanel_df_to_db(self, df):
         import mysql.connector
 
         try:
@@ -66,6 +66,39 @@ class Database():
 
             values = [
                 (int(r.panel_id), r.timestamp, float(r.temperature_c))
+                for r in df.itertuples(index=False)
+            ]
+
+            cursor.executemany(sql, values)
+            db.commit()
+
+        except mysql.connector.Error as e:
+            print(f"MySQL hiba: {e}")
+            db.rollback()
+
+        finally:
+            cursor.close()
+            db.close()
+
+    def portions_df_to_db(self, df):
+        import mysql.connector
+
+        try:
+            db = mysql.connector.connect(
+                host=self.host,
+                port=self.port,
+                user=self.user,
+                password=self.passw
+            )
+            cursor = db.cursor()
+
+            sql = """
+            INSERT INTO userdb.doses (dose_id, start_date, start_time, end_date, end_time, interval_sec, duration_min)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+
+            values = [
+                (int(r.dose_id), r.start_date, r.start_time, r.end_date, r.end_time, r.interval_sec, r.duration_min)
                 for r in df.itertuples(index=False)
             ]
 
