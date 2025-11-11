@@ -44,8 +44,8 @@ def main():
     portions_df.columns = ["dose_id", "start_date", "start_time", "end_date", "end_time", "interval_sec", "duration_min"]
 
 
-    #db = Database("mysqldb",3306,"dm","dmpass")
-    db = Database("127.0.0.1",3306,"db_bead","db_pass")
+    db = Database("mysqldb",3306,"dm","dmpass")
+    #db = Database("127.0.0.1",3306,"db_bead","db_pass")
 
     while db.isRdy() == 0:
           print("Waiting for database to become available...")

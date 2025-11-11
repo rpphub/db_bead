@@ -22,3 +22,10 @@ services:
       - PMA_HOST=mysqldb
     depends_on:
       - mysqldb
+  db_upload:
+    build: 
+      context: ./db_upload
+    container_name: db_upload
+    #restart: always
+    depends_on:
+      - mysqldb
