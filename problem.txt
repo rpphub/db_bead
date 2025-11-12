@@ -1,0 +1,3 @@
+-SQL-ben . tizedes pont van nem vessző, le kell módosítani
+-MySQL hiba: 1264 (22003): Out of range value for column 'temperature_c' at row 471549
+- adagok file-ban a felesleges üres sorok törlése.
