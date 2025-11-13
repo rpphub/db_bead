@@ -12,7 +12,6 @@ DB_CONFIG = {
 def get_connection():
     return pymysql.connect(**DB_CONFIG)
 
-
 def multiple_queries():
     query = """
     SELECT

@@ -30,9 +30,28 @@ def get_avg_panel_temperature():
             """)
             return cursor.fetchall()
 
+#Legfrissebb hőmérséklett panelenként
+def get_latest_temperature_per_panel():
+    with get_connection() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT panel_id, temperature_c, timestamp
+                FROM measurement_data
+                WHERE (panel_id, timestamp) IN (
+                    SELECT panel_id, MAX(timestamp)
+                    FROM measurement_data
+                    GROUP BY panel_id
+                    )
+                ORDER BY panel_id;
+            """)
+            return cursor.fetchall()
+
+
+
 if __name__ == "__main__":
     ##result = get_all_panels()
-    result = get_avg_panel_temperature()
+    ##result = get_avg_panel_temperature()
+    result = get_latest_temperature_per_panel()
     for row in result:
         print(row)
 

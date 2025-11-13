@@ -10,6 +10,7 @@ DB_CONFIG = {
 }
 
 
+
 def insert_dose_and_measurements():
     try:
         conn = pymysql.connect(**DB_CONFIG)
