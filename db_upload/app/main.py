@@ -9,10 +9,27 @@ def main():
     #Panelek
     # Táblázat beolvasás és manipuláció
     df = Data.get_df_from_csv("data/raw_panel.csv")
+    df_header = pd.read_csv("data/raw_panel.csv",sep=';',header=0) #más a kódolos.... muszáj még1x beolvasni
+
+    cooling_panels_rows = []
+
+    for i in range(0, df_header.shape[1], 2):
+        colname = df_header.columns[i]
+        short = colname.split('[')[0].strip()
+
+        cooling_panels_rows.append({
+            "panel_id": short.split()[-1],
+            "panel_name": short,
+        })
+
+    cooling_panels_df = pd.DataFrame(cooling_panels_rows)
+
+    print(cooling_panels_df)
 
     tables = []
     # 2 oszloponként lépünk végig (0, 2, 4, ..., 26)
     for i in range(0, df.shape[1], 2):
+
         # kiválasztjuk a 2 oszlopot
         sub = df.iloc[:, i:i+2].copy()
 
@@ -37,6 +54,8 @@ def main():
         .astype(float)              # majd float-tá konvertálás
     )
 
+
+
     #Adagok
     # Táblázat beolvasás és manipuláció
     portions_df = Data.get_df_from_csv("data/Adagok.csv")
@@ -52,6 +71,14 @@ def main():
           time.sleep(5)
     print("Connection OK.")
 
+
+    if(db.tableHasData("cooling_panels")):
+        print("cooling_panels Data rdy.")
+    else:    
+        print("cooling_panels Upload to DB.")
+        db.cooling_panels_df_to_db(cooling_panels_df)
+        print("cooling_panels Upload Finished.")
+
     if(db.tableHasData("doses")):
         print("doses Data rdy.")
     else:    
@@ -60,12 +87,12 @@ def main():
         print("portions_df Upload Finished.")
 
     
-    if(db.tableHasData("cooling_panels")):
-        print("cooling_panels Data rdy.")
+    if(db.tableHasData("measurement_data")):
+        print("measurement_data Data rdy.")
     else:    
-        print("cooling_panels Upload to DB.")
-        db.coolingpanel_df_to_db(df_long)
-        print("cooling_panels Upload Finished.")
+        print("measurement_data Upload to DB.")
+        db.measurement_data_df_to_db(df_long)
+        print("measurement_data Upload Finished.")
 
 
 if __name__ == "__main__":

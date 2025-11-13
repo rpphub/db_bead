@@ -46,8 +46,8 @@ class Database():
         except Exception as e:
             print(f"Error: {e}")
             return 0
-    
-    def coolingpanel_df_to_db(self, df):
+
+    def cooling_panels_df_to_db(self, df):
         import mysql.connector
 
         try:
@@ -60,7 +60,40 @@ class Database():
             cursor = db.cursor()
 
             sql = """
-            INSERT INTO userdb.cooling_panels (panel_id, timestamp, temperature_c)
+            INSERT INTO userdb.cooling_panels (panel_id, panel_name)
+            VALUES (%s, %s)
+            """
+
+            values = [
+                (int(r.panel_id), r.panel_name)
+                for r in df.itertuples(index=False)
+            ]
+
+            cursor.executemany(sql, values)
+            db.commit()
+
+        except mysql.connector.Error as e:
+            print(f"MySQL hiba: {e}")
+            db.rollback()
+
+        finally:
+            cursor.close()
+            db.close()
+
+    def measurement_data_df_to_db(self, df):
+        import mysql.connector
+
+        try:
+            db = mysql.connector.connect(
+                host=self.host,
+                port=self.port,
+                user=self.user,
+                password=self.passw
+            )
+            cursor = db.cursor()
+
+            sql = """
+            INSERT INTO userdb.measurement_data (panel_id, timestamp, temperature_c)
             VALUES (%s, %s, %s)
             """
 
