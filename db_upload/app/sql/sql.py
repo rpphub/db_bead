@@ -15,7 +15,8 @@ class Database():
             host=self.host,
             port=self.port,
             user=self.user,
-            password=self.passw)
+            password=self.passw
+            )
 
             db.close()
             return 1
@@ -28,7 +29,7 @@ class Database():
                 host=self.host,
                 port=self.port,
                 user=self.user,
-                password=self.passw,
+                password=self.passw
             )
 
             cursor = db.cursor()
